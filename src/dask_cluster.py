@@ -15,6 +15,8 @@ parser.add_argument("--project", type=str)
 args = parser.parse_args()
 
 cluster_address = args.cluster
+project = args.project
+
 print(cluster_address)
 
 from dask.distributed import Client
@@ -26,8 +28,10 @@ data_dir = os.path.join(proj_dir, "data")
 data_raw_dir = os.path.join(data_dir, "raw")
 data_pro_dir = os.path.join(data_dir, "processed")
 
+print(proj_dir)
+print(data_dir)
 if not os.path.exists(data_pro_dir):
-    os.mkdir(data_pro_dir)
+    os.makedirs(data_pro_dir)
 
 
 
@@ -44,4 +48,4 @@ dask_executor = DaskExecutor(address = cluster_address)
 with Flow("mistral_test", executor = dask_executor) as flow:
     create_data((10**3,10**3,10**3))
 
-flow.register(project_name = "project")
+flow.register(project_name = project)
