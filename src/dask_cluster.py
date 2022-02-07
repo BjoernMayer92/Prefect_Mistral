@@ -10,7 +10,8 @@ import argparse
 from prefect.engine.executors import DaskExecutor
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--cluster")
+parser.add_argument("--cluster", type=str)
+parser.add_argument("--project", type=str)
 args = parser.parse_args()
 
 cluster_address = args.cluster
@@ -43,4 +44,4 @@ dask_executor = DaskExecutor(address = cluster_address)
 with Flow("mistral_test", executor = dask_executor) as flow:
     create_data((10**3,10**3,10**3))
 
-flow.register(project_name = "Test")
+flow.register(project_name = "project")

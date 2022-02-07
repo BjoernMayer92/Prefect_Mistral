@@ -29,10 +29,25 @@ The output of client should look similar to this:
 ![Image](./docs/assets/images/dask_scheduler.png)
 
 # Setting up Prefect
-##
-## 
-##
-
+## Set up the prefect cloud
+Setting up the prefect cloud follows this tutorial [Link](https://docs.prefect.io/orchestration/getting-started/set-up.html#set-the-prefect-cloud-backend)
+### Set the prefect cloud backend
+```markdown
+prefect backend cloud
+```
+### Login in
+For this example we will use the cloud solutio provided by prefect. But also setting up your own prefect server will work. First we need to create an account and log in to
+https://cloud.prefect.io/
+### Setting up the API key
+For authentication we will need to generate an authentication key here : [Link](https://cloud.prefect.io/user/keys). The newly created key will be copied and stored for use by:
+```markdown
+prefect auth login --key <YOUR-KEY>
+```
+### Create a new projects
+```markdown
+prefect create project "tutorial"
+```
+## Register a flow
 
 3. List
 
