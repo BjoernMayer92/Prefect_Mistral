@@ -5,9 +5,7 @@ Guide on how to run prefect workflows on a dask slurmcluster deployed on Mistral
 
 # Setting up Slurm Clsuter
 
-1. Start a dask Slurmcluster.
-
-    Use either jupyterhub([Link](https://jupyterhub.dkrz.de/)) to start a dask slurm cluster or run it as a script [Link](./src/start_dask_slurmcluster.py) on mistral directly. For more info check [Link](https://docs.dkrz.de/blog/2020/dask_jobqueue.html)
+Use either jupyterhub([Link](https://jupyterhub.dkrz.de/)) to start a dask slurm cluster or run it as a script [Link](./src/start_dask_slurmcluster.py) on mistral directly. For more info check [Link](https://docs.dkrz.de/blog/2020/dask_jobqueue.html)
 ```markdown
 cluster = SLURMCluster(name=name,
                        queue = queue,
@@ -48,31 +46,34 @@ prefect auth login --key <YOUR-KEY>
 prefect create project "tutorial"
 ```
 ## Register a flow
-
-3. List
-
+We can now register a flow for this project with the general structure of prefect:
 ```markdown
-Syntax highlighted code block
+    from prefect.engine.executors import DaskExecutor
 
-# Header 1
-## Header 2
-### Header 3
+    dask_executor = DaskExecutor(address = cluster_address)
+    with Flow("mistral_test", executor = dask_executor) as flow:
+        <flow description>
 
-- Bulleted
-- List
+    flow.register(project_name = project)
 
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
 ```
+Here cluster address is the address of our Slurm cluster set up at the beginning and project the name of our porject ("tutorial"). An example script can be found here: [Link](./src/dask_cluster.py) and run via the following command:
+```markdown
+    python dask_cluster.py --cluster=<cluster_address> --project="tutorial"
 
-For more details see [Basic writing and formatting syntax](https://docs.github.com/en/github/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax).
+```
+The registered flow in the cloud should now be visible:
+![Image](./docs/assets/images/Prefect_flow.png)
 
-### Jekyll Themes
+## Register an Agent
+Finally we need to register mistral as an agent for our workflow. This can be done in one line:
+``` markdown
+    prefect agent local start
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/BjoernMayer92/Prefect_Mistral/settings/pages). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+```
+The output of the command should look like this:
+![Image](./docs/assets/images/Prefect_agent.png)
 
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
+### Running the flow
+After the setup your flow should show the registered agent on the left side:
+![Image](./docs/assets/images/Prefect_registered.png)
