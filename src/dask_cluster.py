@@ -1,5 +1,5 @@
 import prefect
-from prefect import task, Flow
+from prefect import task, Flow, unmapped
 import xarray as xr
 
 import xarray as xr
@@ -28,24 +28,38 @@ data_dir = os.path.join(proj_dir, "data")
 data_raw_dir = os.path.join(data_dir, "raw")
 data_pro_dir = os.path.join(data_dir, "processed")
 
-print(proj_dir)
-print(data_dir)
 if not os.path.exists(data_pro_dir):
     os.makedirs(data_pro_dir)
+if not os.path.exists(data_raw_dir):
+    os.makedirs(data_raw_dir)
+
 
 
 
 logger = prefect.context.get("logger")
 
+n_files = 10
 
 @task
-def create_data(size):
-    data = xr.DataArray(np.random.normal(size=size))
-    data.to_netcdf("test.nc")
+def create_data(size, n_files):
+    filepaths = []
+    for file_index in range(n_files):
+        data = xr.DataArray(np.random.normal(size=size), dims = ["time","lat","lon"])
+        filepath = os.path.join(data_raw_dir,"data_{}.nc".format(file_index))
+        filepaths.append(filepath)
+        data.to_netcdf(filepath)
+    return filenames
 
+@task 
+def make_mean(filepath,dims):
+    data = xr.load_dataset(filepath)
+    data_mean = data.mean(dim=dims)
+    filename = os.path.basename(filepath)
+    data_mean.to_netcdf(os.path.join(data_pro_dir,filename))
 
 dask_executor = DaskExecutor(address = cluster_address)
 with Flow("mistral_test", executor = dask_executor) as flow:
-    create_data((10**3,10**3,10**3))
+    filepaths = create_data(size = (10**3,10**2,10**2), n_files=10)
+    make_mean.map(filepaths,unmapped(("lat","lon")))
 
 flow.register(project_name = project)
