@@ -44,12 +44,17 @@ n_files = 10
 
 @task
 def create_data(size, n_files):
+    logger.info("create data started")
     filepaths = []
     for file_index in range(n_files):
+        logger.info("filen index {} started".format(file_index))
         data = xr.DataArray(np.random.normal(size=size), dims = ["time","lat","lon"])
+        logger.info("data {} created".format(file_index))
         filepath = os.path.join(data_raw_dir,"data_{}.nc".format(file_index))
         filepaths.append(filepath)
         data.to_netcdf(filepath)
+        logger.info("data {} saved".format(file_index))
+        
     return filepaths
 
 @task 
