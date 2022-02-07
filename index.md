@@ -1,12 +1,27 @@
 ## Welcome to GitHub Pages
-
-You can use the [editor on GitHub](https://github.com/BjoernMayer92/Prefect_Mistral/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
-
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+Guide on how to run prefect workflows on a dask slurmcluster deployed on Mistral from DKRZ ([Link](https://docs.dkrz.de/doc/mistral/index.html)) 
 
 ### Markdown
 
 Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+
+
+1. Start a dask Slurmcluster.
+
+    Use either jupyterhub([Link](https://jupyterhub.dkrz.de/)) to start a dask slurm cluster or run it as a script on mistral directly. For more info check [Link](https://docs.dkrz.de/blog/2020/dask_jobqueue.html)
+```markdown
+from dask_jobqueue import SLURMCluster
+from dask.distributed import Client
+
+cluster = SLURMCluster(name="dask-cluster", queue ="shared", project="uo1075", cores=12, interface="ib0", memory="16GB")
+client = Client(cluster)
+
+cluster.scale(4)
+```
+The output of client should look similar to this:
+[Img]()
+
+3. List
 
 ```markdown
 Syntax highlighted code block
@@ -18,8 +33,6 @@ Syntax highlighted code block
 - Bulleted
 - List
 
-1. Numbered
-2. List
 
 **Bold** and _Italic_ and `Code` text
 
