@@ -26,7 +26,7 @@ interface = args.interface
 memory = args.memory
 workers = args.workers
 port=args.port
-walltime=args.port
+walltime=args.walltime
 
 cluster = SLURMCluster(name=name, queue = queue, project= project, cores=cores, interface=interface, memory=memory, walltime = walltime, scheduler_options={"dashboard_address": ":{}".format(str(port))})
 client = Client(cluster)

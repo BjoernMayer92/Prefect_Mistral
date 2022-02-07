@@ -12,10 +12,12 @@ from prefect.engine.executors import DaskExecutor
 parser = argparse.ArgumentParser()
 parser.add_argument("--cluster", type=str)
 parser.add_argument("--project", type=str)
+parser.add_argument("--run", default = False, type=bool)
 args = parser.parse_args()
 
 cluster_address = args.cluster
 project = args.project
+run = args.run
 
 print(cluster_address)
 
@@ -48,7 +50,7 @@ def create_data(size, n_files):
         filepath = os.path.join(data_raw_dir,"data_{}.nc".format(file_index))
         filepaths.append(filepath)
         data.to_netcdf(filepath)
-    return filenames
+    return filepaths
 
 @task 
 def make_mean(filepath,dims):
@@ -62,4 +64,7 @@ with Flow("mistral_test", executor = dask_executor) as flow:
     filepaths = create_data(size = (10**3,10**2,10**2), n_files=10)
     make_mean.map(filepaths,unmapped(("lat","lon")))
 
-flow.register(project_name = project)
+if run == False:
+    flow.register(project_name = project)
+if run ==True:
+    flow.run()
