@@ -66,7 +66,7 @@ def make_mean(filepath,dims):
 
 dask_executor = DaskExecutor(address = cluster_address)
 with Flow("mistral_test", executor = dask_executor) as flow:
-    filepaths = create_data(size = (10**3,10**2,10**2), n_files=10)
+    filepaths = create_data(size = (10**3,10**3,10**3), n_files=10)
     make_mean.map(filepaths,unmapped(("lat","lon")))
 
 if run == False:
