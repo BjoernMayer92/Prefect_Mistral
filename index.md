@@ -3,9 +3,9 @@ Guide on how to run prefect workflows on a dask slurmcluster deployed on Mistral
 
 
 
-# Setting up Slurm Clsuter
+# Setting up Slurm Cluster
 
-Use either jupyterhub([Link](https://jupyterhub.dkrz.de/)) to start a dask slurm cluster or run it as a script [Link](./src/start_dask_slurmcluster.py) on mistral directly. For more info check [Link](https://docs.dkrz.de/blog/2020/dask_jobqueue.html)
+Use either [jupyterhub](https://jupyterhub.dkrz.de/) to start a dask slurm cluster or run it as a [script](./src/start_slurmcluster.py) on mistral directly. Since compute nodes do not have internet access, only shared and prepost are availiable. For more info check [Link](https://docs.dkrz.de/blog/2020/dask_jobqueue.html)
 ```markdown
 cluster = SLURMCluster(name=name,
                        queue = queue,
@@ -20,7 +20,7 @@ client = Client(cluster)
 
 cluster.scale(workers)
 ```
-When using jupyterhub you should be able to view the dashboard directly in the browser. When running a cluster in the terminal you need to forward the port via ssh tunneling to your local PC and should then be able to view the dask dashboard.
+When using jupyterhub you should be able to view the dashboard directly in the browser. When running a cluster in the terminal you need to forward the port via ssh tunneling to your local PC and should then be able to view the dask dashboard. Save the cluster address since we need to connect our job to the cluster in a later step.
 
 The output of client should look similar to this:
 
@@ -34,7 +34,7 @@ Setting up the prefect cloud follows this tutorial [Link](https://docs.prefect.i
 prefect backend cloud
 ```
 ### Login in
-For this example we will use the cloud solutio provided by prefect. But also setting up your own prefect server will work. First we need to create an account and log in to
+For this example we will use the cloud solution provided by prefect. But also setting up your own prefect server will work. First we need to create an account and log in to
 https://cloud.prefect.io/
 ### Setting up the API key
 For authentication we will need to generate an authentication key here : [Link](https://cloud.prefect.io/user/keys). The newly created key will be copied and stored for use by:
@@ -48,18 +48,16 @@ prefect create project "tutorial"
 ## Register a flow
 We can now register a flow for this project with the general structure of prefect:
 ```markdown
-    from prefect.engine.executors import DaskExecutor
+from prefect.engine.executors import DaskExecutor
 
-    dask_executor = DaskExecutor(address = cluster_address)
-    with Flow("mistral_test", executor = dask_executor) as flow:
-        <flow description>
-
+dask_executor = DaskExecutor(address = cluster_address)
+with Flow("mistral_test", executor = dask_executor) as flow:
     flow.register(project_name = project)
 
 ```
-Here cluster address is the address of our Slurm cluster set up at the beginning and project the name of our porject ("tutorial"). An example script can be found here: [Link](./src/dask_cluster.py) and run via the following command:
+Here cluster address is the address of our Slurm cluster set up at the beginning and project the name of our porject ("tutorial"). An example script can be found [here](./src/prefect_pipeline.py) and run via the following command:
 ```markdown
-    python dask_cluster.py --cluster=<cluster_address> --project="tutorial"
+    python run_job.py --cluster=<cluster_address> --project="tutorial"
 
 ```
 The registered flow in the cloud should now be visible:
@@ -77,3 +75,4 @@ The output of the command should look like this:
 ### Running the flow
 After the setup your flow should show the registered agent on the left side:
 ![Image](./docs/assets/images/Prefect_registered.png)
+You can now click quick run
