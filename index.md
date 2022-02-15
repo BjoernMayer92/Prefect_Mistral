@@ -57,7 +57,7 @@ with Flow("mistral_test", executor = dask_executor) as flow:
 ```
 Here cluster address is the address of our Slurm cluster set up at the beginning and project the name of our porject ("tutorial"). An example script can be found [here](./src/prefect_pipeline.py) and run via the following command:
 ```markdown
-    python run_job.py --cluster=<cluster_address> --project="tutorial"
+    python prefect_pipeline.py --cluster=<cluster_address> --project="tutorial"
 
 ```
 The registered flow in the cloud should now be visible:
@@ -76,3 +76,13 @@ The output of the command should look like this:
 After the setup your flow should show the registered agent on the left side:
 ![Image](./docs/assets/images/Prefect_registered.png)
 You can now click quick run
+
+### Supervision of the FLow
+You can supervise your Flow in the dask cluster as well as on the prefect cloud:
+
+https://user-images.githubusercontent.com/63497217/154149940-a99c01ed-71ae-48f7-a554-49a566b910de.mp4
+
+
+
+https://user-images.githubusercontent.com/63497217/154150948-e37e44e4-3c5c-4d20-82db-086b02b7386e.mp4
+
