@@ -34,5 +34,4 @@ client = Client(cluster)
 cluster.scale(workers)
 
 logging.info(client)
-logging.info(cluster.dashboard_address)
 input("Press enter to close cluster")
