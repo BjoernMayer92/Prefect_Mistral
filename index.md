@@ -3,9 +3,9 @@ Guide on how to run prefect workflows on a dask slurmcluster deployed on Mistral
 
 
 
-# Setting up Slurm Clsuter
+# Setting up Slurm Cluster
 
-Use either jupyterhub([Link](https://jupyterhub.dkrz.de/)) to start a dask slurm cluster or run it as a script [Link](./src/start_dask_slurmcluster.py) on mistral directly. For more info check [Link](https://docs.dkrz.de/blog/2020/dask_jobqueue.html)
+Use either [jupyterhub](https://jupyterhub.dkrz.de/) to start a dask slurm cluster or run it as a [script](./src/start_slurmcluster.py) on mistral directly. Since compute nodes do not have internet access, only shared and prepost are availiable. For more info check [Link](https://docs.dkrz.de/blog/2020/dask_jobqueue.html)
 ```markdown
 cluster = SLURMCluster(name=name,
                        queue = queue,
@@ -77,3 +77,4 @@ The output of the command should look like this:
 ### Running the flow
 After the setup your flow should show the registered agent on the left side:
 ![Image](./docs/assets/images/Prefect_registered.png)
+You can now click quick run

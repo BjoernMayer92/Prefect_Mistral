@@ -8,7 +8,7 @@ logging.basicConfig(level=logging.INFO)
 parser = argparse.ArgumentParser()
 
 parser.add_argument("--name", type=str, help = "Name of the job which appears in Slurm", default ="dask-cluster")
-parser.add_argument("--partition", type=str, help="Name of the partition where the job will run", default = "shared", choices = ["shared", "prepost","compute","compute2"])
+parser.add_argument("--partition", type=str, help="Name of the partition where the job will run", default = "shared", choices = ["shared", "prepost"])
 parser.add_argument("--project", type=str, help = "Name of the project")
 parser.add_argument("--cores", type=int, help="Number of cores")
 parser.add_argument("--interface", type=str, default = "ib0")
